@@ -664,6 +664,7 @@ extern "C" {
     static void* libgl;
     static GL3WglProc(*glx_get_proc_address)(const GLubyte*);
 
+<<<<<<< HEAD
     static int open_libgl(void)
     {
         // While most systems use libGL.so.1, NetBSD seems to use that libGL.so.3. See https://github.com/ocornut/imgui/issues/6983
@@ -673,6 +674,21 @@ extern "C" {
         *(void**)(&glx_get_proc_address) = dlsym(libgl, "glXGetProcAddressARB");
         return GL3W_OK;
     }
+=======
+static int open_libgl(void)
+{
+    // While most systems use libGL.so.1, NetBSD seems to use that libGL.so.3. See https://github.com/ocornut/imgui/issues/6983
+    libgl = dlopen("libGL.so", RTLD_LAZY | RTLD_LOCAL);
+    if (!libgl)
+        libgl = dlopen("libGL.so.1", RTLD_LAZY | RTLD_LOCAL);
+    if (!libgl)
+        libgl = dlopen("libGL.so.3", RTLD_LAZY | RTLD_LOCAL);
+    if (!libgl)
+        return GL3W_ERROR_LIBRARY_OPEN;
+    *(void **)(&glx_get_proc_address) = dlsym(libgl, "glXGetProcAddressARB");
+    return GL3W_OK;
+}
+>>>>>>> 54ef4092a92f777ee6c855b08875e37a4e282b45
 
     static void close_libgl(void) { dlclose(libgl); }
 
